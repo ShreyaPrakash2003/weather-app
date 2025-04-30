@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 const apiKey = "6ba52c12f1be33e38cfc2d9efcfed96d";
 
