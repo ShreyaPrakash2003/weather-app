@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const apiKey = "6ba52c12f1be33e38cfc2d9efcfed96d";
 
@@ -68,7 +69,7 @@ export default function WeatherForecast() {
         return response.json();
       })
       .then((data) => {
-        setForecast(data.list.slice(0, 5)); // Get 5 upcoming forecasts (3-hour interval)
+        setForecast(data.list.slice(0, 5));
       })
       .catch(() => alert("Failed to load 5-day forecast"));
   }
@@ -85,44 +86,98 @@ export default function WeatherForecast() {
 
   const themeStyles = {
     light: {
-      backgroundColor: "#3B5FAB",
-      color: "black"
+      backgroundColor: "#ffffff", // White background for light theme
+      color: "#333333", // Dark gray text
+      backgroundImage: "linear-gradient(to bottom, #a8dadc, #457b9d)", // Soft blue gradient
+      buttonBackground: "#1d3557", // Deep blue for buttons
+      buttonHover: "#457b9d" // Lighter blue on hover
     },
     dark: {
-      backgroundColor: "#1e293b",
-      color: "white"
+      backgroundColor: "#1e293b", // Dark background for dark theme
+      color: "#e5e5e5", // Light gray text
+      backgroundImage: "linear-gradient(to bottom, #0f172a, #1e293b)", // Dark gradient background
+      buttonBackground: "#2d3e50", // Dark button background
+      buttonHover: "#4a6378" // Lighter grayish-blue on hover
     }
   };
 
   return (
-    <div className="container my-5">
+    <div
+      className="container-fluid py-5"
+      style={{
+        backgroundImage: themeStyles[theme].backgroundImage,
+        minHeight: "100vh",
+        transition: "background 0.5s ease",
+        backgroundColor: themeStyles[theme].backgroundColor
+      }}
+    >
       <div
-        className="mx-auto rounded border text-center p-4"
-        style={{ ...themeStyles[theme], width: "400px" }}
+        className="mx-auto rounded border text-center p-4 shadow-lg"
+        style={{
+          backgroundColor: theme === "light" ? "#ffffff" : "#1e293b",
+          color: themeStyles[theme].color,
+          width: "400px",
+          border: "1px solid rgba(255, 255, 255, 0.2)"
+        }}
       >
-        <h2 className="fw-bold mb-4">Weather Forecast</h2>
+        <motion.h2
+          className="fw-bold mb-4"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          🌦️ Weather Forecast
+        </motion.h2>
 
         <div className="d-flex justify-content-between mb-3">
-          <button className="btn btn-sm btn-secondary" onClick={toggleTheme}>
+          <motion.button
+            className="btn btn-sm"
+            onClick={toggleTheme}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            style={{
+              backgroundColor: themeStyles[theme].buttonBackground,
+              color: "#fff",
+              border: "none"
+            }}
+          >
             Toggle {theme === "light" ? "Dark" : "Light"} Theme
-          </button>
-          <button
+          </motion.button>
+          <motion.button
             className="btn btn-sm btn-outline-light"
             onClick={() => fetchWeather(weather.city)}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            style={{
+              borderColor: theme === "light" ? "#1d3557" : "#2d3e50",
+              color: theme === "light" ? "#1d3557" : "#4a6378"
+            }}
           >
             Refresh
-          </button>
+          </motion.button>
         </div>
 
         <form className="d-flex mb-3" onSubmit={handleSubmit}>
-          <input
+          <motion.input
             className="form-control me-2"
             placeholder="City"
             name="city"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
           />
-          <button className="btn btn-outline-light" type="submit">
+          <motion.button
+            className="btn btn-outline-light"
+            type="submit"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            style={{
+              borderColor: theme === "light" ? "#1d3557" : "#2d3e50",
+              color: theme === "light" ? "#1d3557" : "#4a6378"
+            }}
+          >
             Search
-          </button>
+          </motion.button>
         </form>
 
         {loading ? (
@@ -137,9 +192,29 @@ export default function WeatherForecast() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3 }}
           >
-            <img src={weather.icon.trim()} alt="weather icon" />
-            <h1 className="display-4 fw-medium">{weather.temp}℃</h1>
-            <h1 className="mb-4">{weather.city}</h1>
+            <motion.img
+              src={weather.icon.trim()}
+              alt="weather icon"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+            />
+            <motion.h1
+              className="display-4 fw-medium"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              {weather.temp}℃
+            </motion.h1>
+            <motion.h1
+              className="mb-4"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              {weather.city}
+            </motion.h1>
             <div className="row mb-3">
               <div className="col">
                 <i className="bi bi-water"></i> Humidity <br />
@@ -151,38 +226,65 @@ export default function WeatherForecast() {
               </div>
             </div>
             <div>
-              <h5 className="mt-4">Recent Searches</h5>
+              <motion.h5
+                className="mt-4"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                Recent Searches
+              </motion.h5>
               <ul className="list-unstyled">
                 {history.map((city, i) => (
-                  <li key={i}>
+                  <motion.li
+                    key={i}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
                     <button
                       className="btn btn-sm btn-link text-light"
                       onClick={() => fetchWeather(city)}
                     >
                       {city}
                     </button>
-                  </li>
+                  </motion.li>
                 ))}
               </ul>
-              <h5 className="mt-4">5-Day Forecast</h5>
+              <motion.h5
+                className="mt-4"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                5-Day Forecast
+              </motion.h5>
               <div className="d-flex flex-wrap justify-content-center gap-2">
                 {forecast.map((entry, i) => (
-                  <div
+                  <motion.div
                     key={i}
                     className="p-2 rounded"
                     style={{
-                      backgroundColor: theme === "light" ? "#fff" : "#334155",
+                      backgroundColor:
+                        theme === "light" ? "#e0f2fe" : "#2d3e50",
                       color: theme === "light" ? "#000" : "#fff",
                       width: "100px"
                     }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: i * 0.2 }}
                   >
-                    <div>{new Date(entry.dt_txt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                    <div>
+                      {new Date(entry.dt_txt).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit"
+                      })}
+                    </div>
                     <img
                       src={`https://openweathermap.org/img/wn/${entry.weather[0].icon}.png`}
                       alt="forecast icon"
                     />
                     <div>{entry.main.temp.toFixed(0)}℃</div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </div>
